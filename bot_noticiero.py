@@ -3,7 +3,7 @@ import random
 from datetime import datetime
 
 # 📊 CONFIGURACIÓN DE TUS ENLACES:
-URL_DISCORD_NOTICIAS = "https://discord.com/api/webhooks/150912242563387455/V4hnU2XGCG8nt5YZUFAt7U6gUtaBq1eAaWEL_w4w2o0WqE3rkPkah_XL7ozsTfdAKuhd"
+URL_DISCORD_NOTICIAS = "https://discord.com/api/webhooks/1509192242563387455/V4hnU2XGCG8nt5YZUFAt7U6gUtaBq1eAawEL_w4w2o0WqE3rkPkah_XL7ozsTfdAKuhd"
 API_KEY_NOTICIAS = "a3218623d03747de97b5e4b1643f1fd2"
 
 def procesar_articulos(articulos, cantidad_deseada, etiqueta_por_defecto):
