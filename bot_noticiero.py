@@ -1,14 +1,14 @@
 import requests
 
-# 📊 CONFIGURACIÓN DE TUS ENLACES (Pega tus datos dentro de las comillas):
-URL_DISCORD_NOTICIAS = "https://discord.com/api/webhooks/1509192242563387455/V4hnU2XGCG8nt5YZUFAt7U6gUtaBq1eAawEL_w4w2o0WqE3rkPkah_XL7ozsTfdAKuhd" # <-- Pon aquí tu webhook completo
-API_KEY_NOTICIAS = "a3218623d03747de97b5e4b1643f1fd2" # <-- Pon aquí tu clave de NewsAPI sin corchetes ni llaves
+# 📊 CONFIGURACIÓN DE TUS ENLACES:
+URL_DISCORD_NOTICIAS = "https://discord.com/api/webhooks/1509192242563387455/V4hnU2XGCG8nt5YZUFAt7U6gUtaBq1eAawEL_w4w2o0WqE3rkPkah_XL7ozsTfdAKuhd"
+API_KEY_NOTICIAS = "a3218623d03747de97b5e4b1643f1fd2"
 
 def obtener_noticias_globales():
-    # Buscamos las noticias más importantes de impacto general en español
-    url = f"https://newsapi.org/v2/top-headlines?language=es&pageSize=15&apiKey={API_KEY_NOTICIAS}"
+    # 🌟 CAMBIO CLAVE: Usamos 'everything' con palabras de búsqueda amplias en español y ordenado por popularidad
+    url = f"https://newsapi.org/v2/everything?q=(mundo OR internacional OR global)&language=es&sortBy=popularity&pageSize=20&apiKey={API_KEY_NOTICIAS}"
     
-    print("📰 Conectando con las agencias de noticias internacionales...")
+    print("📰 Conectando con el satélite de noticias mundiales...")
     try:
         respuesta = requests.get(url)
         if respuesta.status_code == 200:
@@ -23,18 +23,22 @@ def obtener_noticias_globales():
                 descripcion = art.get("description")
                 enlace = art.get("url")
                 imagen = art.get("urlToImage")
-                fuente = art.get("source", {}).get("name", "Internacional")
+                fuente = art.get("source", {}).get("name", "Mundo")
                 
-                # Nos saltamos noticias rotas, eliminadas o vacías
+                # Descartamos si falta información clave o si la noticia fue removida
                 if not titulo or not descripcion or "[Removed]" in titulo or "Removed" in descripcion:
                     continue
                 
-                # Diseñamos la tarjeta azul estética
+                # Recortamos la descripción si es exageradamente larga para que quepa en Discord
+                if len(descripcion) > 200:
+                    descripcion = descripcion[:197] + "..."
+                
+                # Diseñamos la tarjeta azul informativa
                 embed = {
                     "title": f"📢 {titulo}",
                     "url": enlace,
                     "description": descripcion,
-                    "color": 3447003, # Azul informativo
+                    "color": 3447003,  # Azul informativo elegante
                     "thumbnail": {"url": imagen} if imagen else None,
                     "footer": {
                         "text": f"📰 Fuente: {fuente} • Gordobot Noticiero"
@@ -43,7 +47,7 @@ def obtener_noticias_globales():
                 embeds.append(embed)
                 contador += 1
                 
-                # Mandamos las 3 más importantes
+                # Con 3 noticias de impacto es suficiente para el boletín
                 if contador >= 3:
                     break
             
@@ -55,11 +59,10 @@ def obtener_noticias_globales():
                 requests.post(URL_DISCORD_NOTICIAS, json=payload)
                 print("¡Boletín de noticias enviado con éxito a Discord! 🎉")
             else:
-                print("⚠️ No se encontraron noticias válidas filtradas en esta tanda de la API.")
+                print("⚠️ La API devolvió datos, pero ninguno pasó el filtro de calidad.")
                 
         else:
             print(f"❌ Error con la API de noticias. Código: {respuesta.status_code}")
-            print("Verifica que tu API_KEY_NOTICIAS esté bien copiada y no tenga espacios.")
             
     except Exception as e:
         print(f"❌ Error de conexión: {e}")
