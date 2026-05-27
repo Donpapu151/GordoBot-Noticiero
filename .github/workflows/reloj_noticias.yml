@@ -1,0 +1,27 @@
+name: Alarma Automatica Noticiero
+
+on:
+  schedule:
+    # ⏰ Se ejecuta todos los días a las 14:00 UTC (Ajusta según tu país)
+    - cron: '0 14 * * *'
+  workflow_dispatch: # Permite que también puedas activarlo con el botón manual
+
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar el codigo del repositorio
+      uses: actions/checkout@v4
+
+    - name: Configurar Python en el servidor
+      uses: actions/setup-python@v5
+      with:
+        python-python-version: '3.11'
+
+    - name: Instalar librerias necesarias
+      run: pip install requests
+
+    - name: Ejecutar el Gordobot Noticiero
+      # 🌟 IMPORTANTE: Le decimos a Python la ruta exacta de tu archivo
+      run: python bot_noticiero.py
